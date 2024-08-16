@@ -9,7 +9,7 @@ library(tayloRswift)
 library(cowplot)
 library(patchwork)
 library(forcats)
-install.packages("forcats")
+
 #load theme
 mlc_theme <- theme(
   axis.title.x=element_text(size=14, face="bold", colour = "black"),
@@ -33,6 +33,7 @@ data.now2<-data.now2 %>% mutate(year = year(Activity_Start_Date),
                                 month = month(Activity_Start_Date), day = yday(Activity_Start_Date))
 data.now2<- data.now2 %>% mutate(monthname = month.abb[month])
 data.now2$Result_Value<-as.numeric(data.now2$Result_Value)
+
 
 #make a col that is nmln common lake names  NOTE THIS ONLY WORKS FOR NMLN LAKES NOT STREAMS
 data.now2<- data.now2 %>% mutate(lakename = case_when(grepl("ABBOT", Station_ID) ~ "Abbot",
