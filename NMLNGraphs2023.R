@@ -797,6 +797,7 @@ for (i in unique(df$day)) {
 
 #another way
 
+#make a function to extract p values
 my_lm<-lm(Result_Value ~ year, data = nmln %>% filter(Characteristic_ID == "TN", Station_ID == "ECHO"))
 
 
@@ -812,12 +813,18 @@ overall_p <- function(my_lm) {
 overall_p(my_lm)
 summary(my_lm)
 
-nmln2<- nmln
 
 
 
-#remove bull from nmln2 it has data only for 2009
-#figure out how to handle NAs, how was it handled in state of the lake do the same then run data
+
+
+#this code puts in all non-detects as the method detection limit
+nmln2<- nmln %>% 
+  mutate(result_nd = case_when(Result_Detection_Condition == "Not Detected" ~ nmln$Method_Detection_Limit_Value,
+                               Result_Detection_Condition == "" ~ nmln$Result_Value,
+                               is.na(Result_Detection_Condition) ~ nmln$Result_Value)) 
+
+
 
 
 #take out all the sites with no TN data or too little TN data (there is deff an easier way but this is how i did it)
@@ -835,14 +842,14 @@ nmln2<- filter(nmln2, Characteristic_ID == "TN")
 
 #make an empty dataframe
 nmln.tn.stats<-data.frame()
-#for loop to extract trend and p value for each lake
+#for loop to extract trend and p value for each lake using results that include non-detects
 for (i in unique(nmln2$Station_ID)) {
   
   #make object called station ID that is Station ID to help with merging
   Station_ID<- i
   
   #run lm
-  my_lm<-lm(Result_Value ~ Activity_Start_Date, data = nmln2 %>% filter(Characteristic_ID == "TN", Station_ID == i))
+  my_lm<-lm(result_nd ~ Activity_Start_Date, data = nmln2 %>% filter(Characteristic_ID == "TN", Station_ID == i))
   
   #extract coeffcients
  cf<-coef(my_lm)
@@ -869,8 +876,44 @@ for (i in unique(nmln2$Station_ID)) {
 #make final dataframe with stats attached
 nmln3<-merge(x = nmln.tn.stats, y = nmln2, by = "Station_ID")
 
+#now filter for p values that are significant
+tn.sig.nmln<-nmln3 %>% filter(p< 0.05)
+#see how many
+unique(tn.sig.nmln$Station_ID)
+
+#make TN graphs ####
+#in a loop
+
+plot_list = list()
+for (i in unique(tn.sig.nmln$Station_ID)){
+  
+  onelake<- tn.sig.nmln %>% filter(Station_ID == i)
+  
+  print(ggplot(data = onelake)+
+    geom_point(aes(y = Result_Value, x = Activity_Start_Date))+
+    ylab("Total Nitrogen (ug/l)")+
+    xlab("Year")+
+    geom_smooth(method = 'lm', se = FALSE,  aes(y = Result_Value, x = Activity_Start_Date))+
+    mlc_theme+
+    ggtitle(onelake$lakename, " \nTotal Nitrogen trend"))
+    
+  
+  
+  plot_list[[i]]  = p
+  
+  #code for saving when needed
+  # file_name = paste(i, ".tiff", sep="")
+  # tiff(file_name, height = 2500, width = 2500, res = 300)
+  # print(plot_list[[i]])
+  # dev.off()
+  
+  
+}
 
 
 
+#next steps #####
+#put a for loop in a for loop to make p and slope for TP TN and CHL
+#make all graphs in for loop
 
 
