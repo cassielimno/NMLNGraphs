@@ -797,7 +797,7 @@ for (i in unique(df$day)) {
 
 #another way
 
-my_lm<-lm(Result_Value ~ year, data = nmln %>% filter(Characteristic_ID == "TN", Station_ID == "BULL"))
+my_lm<-lm(Result_Value ~ year, data = nmln %>% filter(Characteristic_ID == "TN", Station_ID == "ECHO"))
 
 
 overall_p <- function(my_lm) {
@@ -815,35 +815,62 @@ summary(my_lm)
 nmln2<- nmln
 
 
-nmln2<- mutate(nmln2, pval = case_when(Station_ID == "ABBOT" & Characteristic_ID == "TN" ~ overall_p(my_lm),
-                                       .default = 5000))
+
 #remove bull from nmln2 it has data only for 2009
 #figure out how to handle NAs, how was it handled in state of the lake do the same then run data
 
-nmln2<- filter(nmln2, !Station_ID == "BULL")
+
+#take out all the sites with no TN data or too little TN data (there is deff an easier way but this is how i did it)
+nmln2<- filter(nmln2, !Station_ID == "BULL", !Station_ID == "FH-CONRAD", !Station_ID == "FH-CRESC", 
+               !Station_ID == "FH-DAYT", !Station_ID == "FH-MARCO", !Station_ID == "FH-MISS", 
+               !Station_ID == "FH-WAYF", !Station_ID == "LAKEOW", !Station_ID == "SWAN-L")
 
 
-#put this in a for loop
+unique(nmln2$Station_ID)
 
+
+#make nmln only tn 
+
+nmln2<- filter(nmln2, Characteristic_ID == "TN")
+
+#make an empty dataframe
+nmln.tn.stats<-data.frame()
+#for loop to extract trend and p value for each lake
 for (i in unique(nmln2$Station_ID)) {
   
-
+  #make object called station ID that is Station ID to help with merging
+  Station_ID<- i
   
-  my_lm<-lm(Result_Value ~ year, data = nmln2 %>% filter(Characteristic_ID == "TN", Station_ID == i, na.rm = TRUE))
+  #run lm
+  my_lm<-lm(Result_Value ~ Activity_Start_Date, data = nmln2 %>% filter(Characteristic_ID == "TN", Station_ID == i))
   
-  nmln2<- mutate(nmln2, pval = case_when(Station_ID == i & Characteristic_ID == "TN" ~ overall_p(my_lm),
-                                         .default = 5000))
+  #extract coeffcients
+ cf<-coef(my_lm)
+ 
+ #extract slope from coeffcients
+ slope<- as.numeric(cf[2])
   
+ #extract p using function made above
+  p <- overall_p(my_lm)
+  
+  #make a stats data frame for i
+  stats<-data.frame(p, slope, Station_ID)
+  
+  #if it gets stuck to see which lake is tripping it up
   print(i)
+  
+  #combine each stats dataframe
+  nmln.tn.stats<- rbind(stats, nmln.tn.stats)
   
   
 }
 
-summary(my_lm)
+
+#make final dataframe with stats attached
+nmln3<-merge(x = nmln.tn.stats, y = nmln2, by = "Station_ID")
 
 
 
 
-setwd("C:/Users/User/Dropbox/WLI (2)/CASSIE/NMLN analysis/SummaryScriptsandData/NMLNGraphs")
 
 
