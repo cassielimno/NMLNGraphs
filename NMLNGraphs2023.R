@@ -836,53 +836,63 @@ nmln2<- filter(nmln2, !Station_ID == "BULL", !Station_ID == "FH-CONRAD", !Statio
 unique(nmln2$Station_ID)
 
 
-#make nmln only tn 
+#make nmln only nutrients 
 
-nmln2<- filter(nmln2, Characteristic_ID == "TN")
+nmln2<- filter(nmln2, Characteristic_ID == "TN" | Characteristic_ID == "TP" | Characteristic_ID == "CHL-A-CP")
 
+
+
+#make loop that works for all characteristics
 #make an empty dataframe
-nmln.tn.stats<-data.frame()
+nmln.stats<-data.frame()
 #for loop to extract trend and p value for each lake using results that include non-detects
 for (i in unique(nmln2$Station_ID)) {
   
   #make object called station ID that is Station ID to help with merging
   Station_ID<- i
   
+  #add another loop for characteristic ID
+  for (j in unique(nmln2$Characteristic_ID)) { 
+    
+  #make object for characteristic ID
+    Characteristic_ID<- j
+  
   #run lm
-  my_lm<-lm(result_nd ~ Activity_Start_Date, data = nmln2 %>% filter(Characteristic_ID == "TN", Station_ID == i))
+  my_lm<-lm(result_nd ~ Activity_Start_Date, data = nmln2 %>% filter(Characteristic_ID == j, Station_ID == i))
   
   #extract coeffcients
- cf<-coef(my_lm)
- 
- #extract slope from coeffcients
- slope<- as.numeric(cf[2])
+  cf<-coef(my_lm)
   
- #extract p using function made above
+  #extract slope from coeffcients
+  slope<- as.numeric(cf[2])
+  
+  #extract p using function made above
   p <- overall_p(my_lm)
   
   #make a stats data frame for i
-  stats<-data.frame(p, slope, Station_ID)
+  stats<-data.frame(p, slope, Station_ID, Characteristic_ID)
   
   #if it gets stuck to see which lake is tripping it up
   print(i)
   
   #combine each stats dataframe
-  nmln.tn.stats<- rbind(stats, nmln.tn.stats)
+  nmln.stats<- rbind(stats, nmln.tn.stats)
   
   
-}
+} }
 
 
 #make final dataframe with stats attached
-nmln3<-merge(x = nmln.tn.stats, y = nmln2, by = "Station_ID")
+nmln3<-merge(x = nmln.stats, y = nmln2, by = c("Station_ID", "Characteristic_ID"))
 
-#now filter for p values that are significant
-tn.sig.nmln<-nmln3 %>% filter(p< 0.05)
+
+#now filter for p values that are significant AND just nitrogen data
+tn.sig.nmln<-nmln3 %>% filter(p< 0.05, Characteristic_ID == "TN")
 #see how many
 unique(tn.sig.nmln$Station_ID)
 
 #make TN graphs ####
-#in a loop
+#in a loop for sig graphs
 
 plot_list = list()
 for (i in unique(tn.sig.nmln$Station_ID)){
@@ -913,7 +923,6 @@ for (i in unique(tn.sig.nmln$Station_ID)){
 
 
 #next steps #####
-#put a for loop in a for loop to make p and slope for TP TN and CHL
 #make all graphs in for loop
 
 
