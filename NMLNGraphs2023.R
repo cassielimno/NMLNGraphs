@@ -876,7 +876,7 @@ for (i in unique(nmln2$Station_ID)) {
   print(i)
   
   #combine each stats dataframe
-  nmln.stats<- rbind(stats, nmln.tn.stats)
+  nmln.stats<- rbind(stats, nmln.stats)
   
   
 } }
@@ -900,10 +900,10 @@ for (i in unique(tn.sig.nmln$Station_ID)){
   onelake<- tn.sig.nmln %>% filter(Station_ID == i)
   
   print(ggplot(data = onelake)+
-    geom_point(aes(y = Result_Value, x = Activity_Start_Date))+
+    geom_point(aes(y = result_nd, x = Activity_Start_Date))+
     ylab("Total Nitrogen (ug/l)")+
     xlab("Year")+
-    geom_smooth(method = 'lm', se = FALSE,  aes(y = Result_Value, x = Activity_Start_Date))+
+    geom_smooth(method = 'lm', se = FALSE,  aes(y = result_nd, x = Activity_Start_Date))+
     mlc_theme+
     ggtitle(onelake$lakename, " \nTotal Nitrogen trend"))
     
@@ -919,6 +919,114 @@ for (i in unique(tn.sig.nmln$Station_ID)){
   
   
 }
+
+
+#do that again for tp
+#now filter for p values that are significant AND just phosphorus data
+tp.sig.nmln<-nmln3 %>% filter(p< 0.05, Characteristic_ID == "TP")
+#see how many
+unique(tp.sig.nmln$Station_ID)
+
+#make TN graphs ####
+#in a loop for sig graphs
+
+plot_list = list()
+for (i in unique(tp.sig.nmln$Station_ID)){
+  
+  onelake<- tp.sig.nmln %>% filter(Station_ID == i)
+  
+  print(ggplot(data = onelake)+
+          geom_point(aes(y = result_nd, x = Activity_Start_Date))+
+          ylab("Total Phosphorus (ug/l)")+
+          xlab("Year")+
+          geom_smooth(method = 'lm', se = FALSE,  aes(y = result_nd, x = Activity_Start_Date))+
+          mlc_theme+
+          ggtitle(onelake$lakename, " \nTotal Phosphorus trend"))
+  
+  
+  
+  plot_list[[i]]  = p
+  
+  #code for saving when needed
+  # file_name = paste(i, ".tiff", sep="")
+  # tiff(file_name, height = 2500, width = 2500, res = 300)
+  # print(plot_list[[i]])
+  # dev.off()
+  
+  
+}
+
+
+#now chl sig graphs
+chl.sig.nmln<-nmln3 %>% filter(p< 0.05, Characteristic_ID == "CHL-A-CP")
+#see how many
+unique(chl.sig.nmln$Station_ID)
+
+#in a loop for sig graphs
+
+plot_list = list()
+for (i in unique(chl.sig.nmln$Station_ID)){
+  
+  onelake<- chl.sig.nmln %>% filter(Station_ID == i)
+  
+  print(ggplot(data = onelake)+
+          geom_point(aes(y = result_nd, x = Activity_Start_Date))+
+          ylab("Chlorophyll (ug/l)")+
+          xlab("Year")+
+          geom_smooth(method = 'lm', se = FALSE,  aes(y = result_nd, x = Activity_Start_Date))+
+          mlc_theme+
+          ggtitle(onelake$lakename, " \n Chlorophyll trend"))
+  
+  
+  
+  plot_list[[i]]  = p
+  
+  #code for saving when needed
+  # file_name = paste(i, ".tiff", sep="")
+  # tiff(file_name, height = 2500, width = 2500, res = 300)
+  # print(plot_list[[i]])
+  # dev.off()
+  
+  
+}
+
+
+#make all non-sig plots (can this be done all in one loop) ####
+#loop creates blank graphs because not every station included counts for each characteristic
+nmln3.nonsig<- nmln3 %>% filter(p > 0.05)
+
+plot_list = list()
+for (i in unique(nmln3.nonsig$Station_ID)){
+  
+  onelake<- nmln3.nonsig %>% filter(Station_ID == i)
+  
+  for (j in unique(nmln3.nonsig$Characteristic_Name))
+    
+    onechar<- onelake %>% filter(Characteristic_Name == j)
+  
+  print(ggplot(data = onechar)+
+          geom_point(aes(y = result_nd, x = Activity_Start_Date))+
+          ylab( " (ug/l)")+
+          xlab("Year")+
+          mlc_theme+
+          ggtitle(onechar$lakename, onechar$Characteristic_Name))
+  
+  
+  
+  plot_list[[i]]  = p
+  
+  #code for saving when needed
+  # file_name = paste(i, ".tiff", sep="")
+  # tiff(file_name, height = 2500, width = 2500, res = 300)
+  # print(plot_list[[i]])
+  # dev.off()
+  
+  
+}
+
+
+
+
 
 
 
