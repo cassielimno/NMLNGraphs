@@ -893,13 +893,14 @@ unique(tn.sig.nmln$Station_ID)
 
 #make TN graphs ####
 #in a loop for sig graphs
+setwd("C:/Users/User/Dropbox/WLI (2)/PROJECTS/NMLN/REPORTING/GRAPHS/NMLNSummaryGraphs2023/TN")
 
 plot_list = list()
 for (i in unique(tn.sig.nmln$Station_ID)){
   
   onelake<- tn.sig.nmln %>% filter(Station_ID == i)
   
-  print(ggplot(data = onelake)+
+ plot = print(ggplot(data = onelake)+
     geom_point(aes(y = result_nd, x = Activity_Start_Date))+
     ylab("Total Nitrogen (ug/l)")+
     xlab("Year")+
@@ -909,13 +910,13 @@ for (i in unique(tn.sig.nmln$Station_ID)){
     
   
   
-  plot_list[[i]]  = p
+  plot_list[[i]]  = plot
   
   #code for saving when needed
-  # file_name = paste(i, ".tiff", sep="")
-  # tiff(file_name, height = 2500, width = 2500, res = 300)
-  # print(plot_list[[i]])
-  # dev.off()
+  file_name = paste(i, ".png", sep="")
+  tiff(file_name, height = 2500, width = 2500, res = 300)
+  print(plot_list[[i]])
+  dev.off()
   
   
 }
@@ -927,15 +928,16 @@ tp.sig.nmln<-nmln3 %>% filter(p< 0.05, Characteristic_ID == "TP")
 #see how many
 unique(tp.sig.nmln$Station_ID)
 
-#make TN graphs ####
+#make TP graphs ####
 #in a loop for sig graphs
+setwd("C:/Users/User/Dropbox/WLI (2)/PROJECTS/NMLN/REPORTING/GRAPHS/NMLNSummaryGraphs2023/TP")
 
 plot_list = list()
 for (i in unique(tp.sig.nmln$Station_ID)){
   
   onelake<- tp.sig.nmln %>% filter(Station_ID == i)
   
-  print(ggplot(data = onelake)+
+ plot =  print(ggplot(data = onelake)+
           geom_point(aes(y = result_nd, x = Activity_Start_Date))+
           ylab("Total Phosphorus (ug/l)")+
           xlab("Year")+
@@ -945,13 +947,13 @@ for (i in unique(tp.sig.nmln$Station_ID)){
   
   
   
-  plot_list[[i]]  = p
+  plot_list[[i]]  = plot
   
   #code for saving when needed
-  # file_name = paste(i, ".tiff", sep="")
-  # tiff(file_name, height = 2500, width = 2500, res = 300)
-  # print(plot_list[[i]])
-  # dev.off()
+  file_name = paste(i, ".tiff", sep="")
+  tiff(file_name, height = 2500, width = 2500, res = 300)
+  print(plot_list[[i]])
+  dev.off()
   
   
 }
@@ -962,6 +964,8 @@ chl.sig.nmln<-nmln3 %>% filter(p< 0.05, Characteristic_ID == "CHL-A-CP")
 #see how many
 unique(chl.sig.nmln$Station_ID)
 
+setwd("C:/Users/User/Dropbox/WLI (2)/PROJECTS/NMLN/REPORTING/GRAPHS/NMLNSummaryGraphs2023/CHL")
+
 #in a loop for sig graphs
 
 plot_list = list()
@@ -969,7 +973,7 @@ for (i in unique(chl.sig.nmln$Station_ID)){
   
   onelake<- chl.sig.nmln %>% filter(Station_ID == i)
   
-  print(ggplot(data = onelake)+
+  plot = print(ggplot(data = onelake)+
           geom_point(aes(y = result_nd, x = Activity_Start_Date))+
           ylab("Chlorophyll (ug/l)")+
           xlab("Year")+
@@ -979,58 +983,123 @@ for (i in unique(chl.sig.nmln$Station_ID)){
   
   
   
-  plot_list[[i]]  = p
+  plot_list[[i]]  = plot
   
   #code for saving when needed
-  # file_name = paste(i, ".tiff", sep="")
-  # tiff(file_name, height = 2500, width = 2500, res = 300)
-  # print(plot_list[[i]])
-  # dev.off()
+  file_name = paste(i, ".png", sep="")
+  tiff(file_name, height = 2500, width = 2500, res = 300)
+  print(plot_list[[i]])
+  dev.off()
   
   
 }
 
 
-#make all non-sig plots (can this be done all in one loop) ####
-#loop creates blank graphs because not every station included counts for each characteristic
+#make all non-sig plots  ####
 nmln3.nonsig<- nmln3 %>% filter(p > 0.05)
 
+
+
+
+#TN loop
+setwd("C:/Users/User/Dropbox/WLI (2)/PROJECTS/NMLN/REPORTING/GRAPHS/NMLNSummaryGraphs2023/TN")
+
+#make tn dataframe
+nmln3.tn.nonsig<- nmln3.nonsig %>% filter(Characteristic_ID == "TN")
+
 plot_list = list()
-for (i in unique(nmln3.nonsig$Station_ID)){
+for (i in unique(nmln3.tn.nonsig$Station_ID)){
   
-  onelake<- nmln3.nonsig %>% filter(Station_ID == i)
+  onelake<- nmln3.tn.nonsig %>% filter(Station_ID == i)
   
-  for (j in unique(nmln3.nonsig$Characteristic_Name))
-    
-    onechar<- onelake %>% filter(Characteristic_Name == j)
   
-  print(ggplot(data = onechar)+
+ plot =  print(ggplot(data = onelake)+
           geom_point(aes(y = result_nd, x = Activity_Start_Date))+
           ylab( " (ug/l)")+
           xlab("Year")+
           mlc_theme+
-          ggtitle(onechar$lakename, onechar$Characteristic_Name))
+          ggtitle(onelake$lakename, "\n Total Nitrogen"))
   
   
   
-  plot_list[[i]]  = p
+  plot_list[[i]]  = plot
   
   #code for saving when needed
-  # file_name = paste(i, ".tiff", sep="")
-  # tiff(file_name, height = 2500, width = 2500, res = 300)
-  # print(plot_list[[i]])
-  # dev.off()
+  file_name = paste(i, ".png", sep="")
+  tiff(file_name, height = 2500, width = 2500, res = 300)
+  print(plot_list[[i]])
+  dev.off()
   
   
 }
 
 
+#TP non sig loop
+setwd("C:/Users/User/Dropbox/WLI (2)/PROJECTS/NMLN/REPORTING/GRAPHS/NMLNSummaryGraphs2023/TP")
+
+#make tn dataframe
+nmln3.tp.nonsig<- nmln3.nonsig %>% filter(Characteristic_ID == "TP")
+
+plot_list = list()
+for (i in unique(nmln3.tp.nonsig$Station_ID)){
+  
+  onelake<- nmln3.tp.nonsig %>% filter(Station_ID == i)
+  
+  
+  plot =  print(ggplot(data = onelake)+
+                  geom_point(aes(y = result_nd, x = Activity_Start_Date))+
+                  ylab( " (ug/l)")+
+                  xlab("Year")+
+                  mlc_theme+
+                  ggtitle(onelake$lakename, "\n Total Nitrogen"))
+  
+  
+  
+  plot_list[[i]]  = plot
+  
+  #code for saving when needed
+  file_name = paste(i, ".png", sep="")
+  tiff(file_name, height = 2500, width = 2500, res = 300)
+  print(plot_list[[i]])
+  dev.off()
+  
+  
+}
 
 
+#CHL non sig loop
+setwd("C:/Users/User/Dropbox/WLI (2)/PROJECTS/NMLN/REPORTING/GRAPHS/NMLNSummaryGraphs2023/CHL")
 
+#make tn dataframe
+nmln3.chl.nonsig<- nmln3.nonsig %>% filter(Characteristic_ID == "CHL-A-CP")
 
+plot_list = list()
+for (i in unique(nmln3.chl.nonsig$Station_ID)){
+  
+  onelake<- nmln3.chl.nonsig %>% filter(Station_ID == i)
+  
+  
+  plot =  print(ggplot(data = onelake)+
+                  geom_point(aes(y = result_nd, x = Activity_Start_Date))+
+                  ylab( " (ug/l)")+
+                  xlab("Year")+
+                  mlc_theme+
+                  ggtitle(onelake$lakename, "\n Total Nitrogen"))
+  
+  
+  
+  plot_list[[i]]  = plot
+  
+  #code for saving when needed
+  file_name = paste(i, ".png", sep="")
+  tiff(file_name, height = 2500, width = 2500, res = 300)
+  print(plot_list[[i]])
+  dev.off()
+  
+  
+}
 
 #next steps #####
-#make all graphs in for loop
+
 
 
