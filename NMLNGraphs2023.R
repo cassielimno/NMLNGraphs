@@ -858,7 +858,7 @@ for (i in unique(nmln2$Station_ID)) {
     Characteristic_ID<- j
   
   #run lm
-  my_lm<-lm(result_nd ~ Activity_Start_Date, data = nmln2 %>% filter(Characteristic_ID == j, Station_ID == i))
+  my_lm<-lm(result_nd ~ year, data = nmln2 %>% filter(Characteristic_ID == j, Station_ID == i))
   
   #extract coeffcients
   cf<-coef(my_lm)
@@ -885,7 +885,7 @@ for (i in unique(nmln2$Station_ID)) {
 #make final dataframe with stats attached
 nmln3<-merge(x = nmln.stats, y = nmln2, by = c("Station_ID", "Characteristic_ID"))
 
-
+nmln3$year<-as.numeric(nmln3$year)
 #now filter for p values that are significant AND just nitrogen data
 tn.sig.nmln<-nmln3 %>% filter(p< 0.05, Characteristic_ID == "TN")
 #see how many
@@ -896,15 +896,16 @@ unique(tn.sig.nmln$Station_ID)
 setwd("C:/Users/User/Dropbox/WLI (2)/PROJECTS/NMLN/REPORTING/GRAPHS/NMLNSummaryGraphs2023/TN")
 
 plot_list = list()
+
 for (i in unique(tn.sig.nmln$Station_ID)){
   
   onelake<- tn.sig.nmln %>% filter(Station_ID == i)
   
  plot = print(ggplot(data = onelake)+
-    geom_point(aes(y = result_nd, x = Activity_Start_Date))+
+    geom_point(aes(y = result_nd, x = year))+
     ylab("Total Nitrogen (ug/l)")+
     xlab("Year")+
-    geom_smooth(method = 'lm', se = FALSE,  aes(y = result_nd, x = Activity_Start_Date))+
+    geom_smooth(method = 'lm', se = FALSE,  aes(y = result_nd, x = year))+
     mlc_theme+
     ggtitle(onelake$lakename, " \nTotal Nitrogen trend"))
     
@@ -938,10 +939,10 @@ for (i in unique(tp.sig.nmln$Station_ID)){
   onelake<- tp.sig.nmln %>% filter(Station_ID == i)
   
  plot =  print(ggplot(data = onelake)+
-          geom_point(aes(y = result_nd, x = Activity_Start_Date))+
+          geom_point(aes(y = result_nd, x = year))+
           ylab("Total Phosphorus (ug/l)")+
           xlab("Year")+
-          geom_smooth(method = 'lm', se = FALSE,  aes(y = result_nd, x = Activity_Start_Date))+
+          geom_smooth(method = 'lm', se = FALSE,  aes(y = result_nd, x = year))+
           mlc_theme+
           ggtitle(onelake$lakename, " \nTotal Phosphorus trend"))
   
@@ -974,10 +975,10 @@ for (i in unique(chl.sig.nmln$Station_ID)){
   onelake<- chl.sig.nmln %>% filter(Station_ID == i)
   
   plot = print(ggplot(data = onelake)+
-          geom_point(aes(y = result_nd, x = Activity_Start_Date))+
+          geom_point(aes(y = result_nd, x = year))+
           ylab("Chlorophyll (ug/l)")+
           xlab("Year")+
-          geom_smooth(method = 'lm', se = FALSE,  aes(y = result_nd, x = Activity_Start_Date))+
+          geom_smooth(method = 'lm', se = FALSE,  aes(y = result_nd, x = year))+
           mlc_theme+
           ggtitle(onelake$lakename, " \n Chlorophyll trend"))
   
@@ -986,7 +987,7 @@ for (i in unique(chl.sig.nmln$Station_ID)){
   plot_list[[i]]  = plot
   
   #code for saving when needed
-  file_name = paste(i, ".png", sep="")
+  file_name = paste(i, ".tiff", sep="")
   tiff(file_name, height = 2500, width = 2500, res = 300)
   print(plot_list[[i]])
   dev.off()
@@ -997,9 +998,6 @@ for (i in unique(chl.sig.nmln$Station_ID)){
 
 #make all non-sig plots  ####
 nmln3.nonsig<- nmln3 %>% filter(p > 0.05)
-
-
-
 
 #TN loop
 setwd("C:/Users/User/Dropbox/WLI (2)/PROJECTS/NMLN/REPORTING/GRAPHS/NMLNSummaryGraphs2023/TN")
@@ -1014,8 +1012,8 @@ for (i in unique(nmln3.tn.nonsig$Station_ID)){
   
   
  plot =  print(ggplot(data = onelake)+
-          geom_point(aes(y = result_nd, x = Activity_Start_Date))+
-          ylab( " (ug/l)")+
+          geom_point(aes(y = result_nd, x = year))+
+          ylab( "Total Nitrogen (ug/l)")+
           xlab("Year")+
           mlc_theme+
           ggtitle(onelake$lakename, "\n Total Nitrogen"))
@@ -1025,7 +1023,7 @@ for (i in unique(nmln3.tn.nonsig$Station_ID)){
   plot_list[[i]]  = plot
   
   #code for saving when needed
-  file_name = paste(i, ".png", sep="")
+  file_name = paste(i, ".tiff", sep="")
   tiff(file_name, height = 2500, width = 2500, res = 300)
   print(plot_list[[i]])
   dev.off()
@@ -1047,11 +1045,11 @@ for (i in unique(nmln3.tp.nonsig$Station_ID)){
   
   
   plot =  print(ggplot(data = onelake)+
-                  geom_point(aes(y = result_nd, x = Activity_Start_Date))+
-                  ylab( " (ug/l)")+
+                  geom_point(aes(y = result_nd, x = year))+
+                  ylab( "Total Phosphorus (ug/l)")+
                   xlab("Year")+
                   mlc_theme+
-                  ggtitle(onelake$lakename, "\n Total Nitrogen"))
+                  ggtitle(onelake$lakename, "\n Total Phosphorus"))
   
   
   
@@ -1080,18 +1078,18 @@ for (i in unique(nmln3.chl.nonsig$Station_ID)){
   
   
   plot =  print(ggplot(data = onelake)+
-                  geom_point(aes(y = result_nd, x = Activity_Start_Date))+
-                  ylab( " (ug/l)")+
+                  geom_point(aes(y = result_nd, x = year))+
+                  ylab( "Total Chlorophyll (ug/l)")+
                   xlab("Year")+
                   mlc_theme+
-                  ggtitle(onelake$lakename, "\n Total Nitrogen"))
+                  ggtitle(onelake$lakename, "\n Total Chlorophyll"))
   
   
   
   plot_list[[i]]  = plot
   
   #code for saving when needed
-  file_name = paste(i, ".png", sep="")
+  file_name = paste(i, ".tiff", sep="")
   tiff(file_name, height = 2500, width = 2500, res = 300)
   print(plot_list[[i]])
   dev.off()
@@ -1100,6 +1098,178 @@ for (i in unique(nmln3.chl.nonsig$Station_ID)){
 }
 
 #next steps #####
+#try changing this to mann kendall will less be significant??
+library(rkt)
+#make loop that works for all characteristics
+#make an empty dataframe
+nmln.stats.mk<-data.frame()
+#for loop to extract trend and p value for each lake using results that include non-detects
+for (i in unique(nmln2$Station_ID)) {
+  
+  #make object called station ID that is Station ID to help with merging
+  Station_ID<- i
+  
+  #add another loop for characteristic ID
+  for (j in unique(nmln2$Characteristic_ID)) { 
+    
+    #make object for characteristic ID
+    Characteristic_ID<- j
+    
+    #new data frame
+    mkdata<-nmln2 %>% filter(Characteristic_ID == j, Station_ID == i)
+    
+    #run lm
+    my_lm<-lm(result_nd ~ year, data = nmln2 %>% filter(Characteristic_ID == j, Station_ID == i))
+    
+    mk<-rkt(mkdata$year, mkdata$Result_Value, rep = "a")
+    
+    #extract coeffcients
+    cf<-print(mk)
+    
+    #extract slope from coeffcients
+    slope<- as.numeric(mk[3])
+    
+    #extract p using function made above
+    p <- as.numeric(mk[1])
+    
+    #save tau as well
+    tau <- as.numeric(mk[12])
+    
+    #make a stats data frame for i
+    stats<-data.frame(p, slope, tau, Station_ID, Characteristic_ID)
+    
+    #if it gets stuck to see which lake is tripping it up
+    print(i)
+    
+    #combine each stats dataframe
+    nmln.stats.mk<- rbind(stats, nmln.stats.mk)
+    
+    
+  } }
+
+#make final dataframe with stats attached
+nmln3.mk<-merge(x = nmln.stats.mk, y = nmln2, by = c("Station_ID", "Characteristic_ID"))
+
+#now filter for p values that are significant AND just nitrogen data
+tn.sig.nmln.mk<-nmln3.mk %>% filter(p< 0.05, Characteristic_ID == "TN")
+#see how many
+unique(tn.sig.nmln$Station_ID)
+#doing mk analysis adds dickey
+unique(tn.sig.nmln.mk$Station_ID)
+
+
+#now filter for p values that are significant AND just nitrogen data
+tp.sig.nmln.mk<-nmln3.mk %>% filter(p< 0.05, Characteristic_ID == "TP")
+#see how many
+unique(tp.sig.nmln$Station_ID)
+#doing mk analysis adds dickey
+unique(tp.sig.nmln.mk$Station_ID)
+
+
+#now filter for p values that are significant AND just nitrogen data
+chl.sig.nmln.mk<-nmln3.mk %>% filter(p< 0.05, Characteristic_ID == "CHL-A-CP")
+#see how many
+unique(chl.sig.nmln$Station_ID)
+#doing mk analysis adds dickey
+unique(chl.sig.nmln.mk$Station_ID)
+
+
+#graph this??
+#use loess stuff from online
+glimpse(chl.sig.nmln.mk)
+
+plot_list = list()
+for (i in unique(chl.sig.nmln.mk$Station_ID)){
+  
+  onelake<- chl.sig.nmln.mk %>% filter(Station_ID == i)
+
+
+trend_line<-predict(loess(result_nd ~ year, data = onelake))
+
+
+plot =  print(ggplot(data = onelake)+
+                geom_point(aes(y = result_nd, x = year), size = 2)+
+                geom_line(aes(x = year, y = trend_line), color = "blue", size = 1.25)+
+                ylab( "Total Chlorophyll (ug/l)")+
+                xlab("Year")+
+                mlc_theme+
+                ggtitle(onelake$lakename, "\n Total Chlorophyll"))
+
+plot_list[[i]]  = plot
+
+#code for saving when needed
+# file_name = paste(i, ".tiff", sep="")
+# tiff(file_name, height = 2500, width = 2500, res = 300)
+# print(plot_list[[i]])
+# dev.off()
+
+
+}
+
+
+#do mk analysis for tn as well
+plot_list = list()
+for (i in unique(tn.sig.nmln.mk$Station_ID)){
+  
+  onelake<- tn.sig.nmln.mk %>% filter(Station_ID == i)
+  
+  
+  trend_line<-predict(loess(result_nd ~ year, data = onelake))
+  
+  
+  plot =  print(ggplot(data = onelake)+
+                  geom_point(aes(y = result_nd, x = year), size = 2)+
+                  geom_line(aes(x = year, y = trend_line), color = "blue", size = 1.25)+
+                  ylab( "Total Nitrogen (ug/l)")+
+                  xlab("Year")+
+                  mlc_theme+
+                  ggtitle(onelake$lakename, "\n Total Nitrogen"))
+  
+  plot_list[[i]]  = plot
+  
+  #code for saving when needed
+  # file_name = paste(i, ".tiff", sep="")
+  # tiff(file_name, height = 2500, width = 2500, res = 300)
+  # print(plot_list[[i]])
+  # dev.off()
+  
+  
+}
+
+
+#for phosphorus
+plot_list = list()
+for (i in unique(tp.sig.nmln.mk$Station_ID)){
+  
+  onelake<- tp.sig.nmln.mk %>% filter(Station_ID == i)
+  
+  
+  trend_line<-predict(loess(result_nd ~ year, data = onelake))
+  
+  
+  plot =  print(ggplot(data = onelake)+
+                  geom_point(aes(y = result_nd, x = year), size = 2)+
+                  geom_line(aes(x = year, y = trend_line), color = "blue", size = 1.25)+
+                  ylab( "Total Phosphorus (ug/l)")+
+                  xlab("Year")+
+                  mlc_theme+
+                  ggtitle(onelake$lakename, "\n Total Phosphorus"))
+  
+  plot_list[[i]]  = plot
+  
+  #code for saving when needed
+  # file_name = paste(i, ".tiff", sep="")
+  # tiff(file_name, height = 2500, width = 2500, res = 300)
+  # print(plot_list[[i]])
+  # dev.off()
+  
+  
+}
+
+
+
+
+
 
 
 
