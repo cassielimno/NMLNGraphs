@@ -206,7 +206,8 @@ for (i in unique(nmln$lakename)){
 #now do DO loop
 #this loop is for saving the graphs####
 #to make sure graphs go to the right place
-setwd("C:/Users/User/Dropbox/WLI (2)/CASSIE/NMLN analysis/NMLNSummaryGraphs2023/DO")
+
+setwd("C:/Users/User/Dropbox/WLI (2)/PROJECTS/NMLN/REPORTING/GRAPHS/NMLNSummaryGraphs2023/DO")
 plot_list = list()
 for (i in unique(nmln$lakename)){
   
@@ -287,8 +288,8 @@ for (i in unique(nmln$lakename)){
                 
         plot_list[[i]]  = p
         
-        file_name = paste(i, ".tiff", sep="")
-        tiff(file_name, height = 2500, width = 2500, res = 300)
+        file_name = paste(i, "_DO.png", sep="")
+        png(file_name, height = 1000, width = 1050, res = 200)
         print(plot_list[[i]])
        dev.off()
   
@@ -296,8 +297,9 @@ for (i in unique(nmln$lakename)){
 }
 
 
-#wide DO for blanchard ####
-setwd("C:/Users/User/Dropbox/WLI (2)/CASSIE/NMLN analysis/NMLNSummaryGraphs2023/DO")
+#cut dates in DO for blanchard ####
+#lets cut to just to july and and august ####
+setwd("C:/Users/User/Dropbox/WLI (2)/PROJECTS/NMLN/REPORTING/GRAPHS/NMLNSummaryGraphs2023/DO")
 nmlnblanch<- nmln %>% filter(Station_ID == "BLANCH")
 plot_list = list()
 for (i in unique(nmlnblanch$lakename)){
@@ -305,7 +307,7 @@ for (i in unique(nmlnblanch$lakename)){
   onelake<- nmlnblanch %>% filter(lakename == i)
   
   p0<- 
-    ggplot(data = onelake %>% filter(Characteristic_ID == "DO", month < 9, year < 2023))+
+    ggplot(data = onelake %>% filter(Characteristic_ID == "DO", month == 8 | month == 7, year < 2023))+
     annotation_custom(g, xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) + 
     annotate("rect", xmin =0, xmax = 1, ymin = -Inf, ymax =0.01, alpha = .2, color = "red", fill = "red")+
     geom_text(x = .5, y = -4.2, label = "ANOXIC", aes(angle = 90,), color = "white")+
@@ -327,7 +329,7 @@ for (i in unique(nmlnblanch$lakename)){
   
   
   p.5<-
-    ggplot(data = onelake %>% filter(Characteristic_ID == "DO", month < 9, year < 2023))+
+    ggplot(data = onelake %>% filter(Characteristic_ID == "DO", month == 8 | month == 7, year < 2023))+
     annotation_custom(g, xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) + 
     annotate("rect", xmin =0, xmax = 1, ymin = -Inf, ymax =0.01, alpha = .2, color = "red", fill = "red")+
     geom_text(x = .5, y = -4.2, label = "ANOXIC", aes(angle = 90,), color = "white")+
@@ -379,10 +381,10 @@ for (i in unique(nmlnblanch$lakename)){
   
   plot_list[[i]]  = p
   
-  ggsave(p, file=paste0("plot_", i,".png"), width = 14, height = 10, units = "cm")
+  #ggsave(p, file=paste0("plot_", i,".png"), width = 14, height = 10, units = "cm")
   
-  file_name = paste(i, ".tiff", sep="")
-  tiff(file_name, height = 2500, width = 3000, res = 300)
+  file_name = paste(i, "_DO.png", sep="")
+  png(file_name, height = 1050, width = 1010, res = 200)
   print(plot_list[[i]])
   dev.off()
   
@@ -394,7 +396,7 @@ for (i in unique(nmlnblanch$lakename)){
 
 
 #now for temperature and printing the graphs #####
-setwd("C:/Users/User/Dropbox/WLI (2)/CASSIE/NMLN analysis/NMLNSummaryGraphs2023/TEMP")
+setwd("C:/Users/User/Dropbox/WLI (2)/PROJECTS/NMLN/REPORTING/GRAPHS/NMLNSummaryGraphs2023/TEMP")
 plot_list = list()
 for (i in unique(nmln$lakename)){
   
@@ -478,8 +480,8 @@ for (i in unique(nmln$lakename)){
   
   plot_list[[i]]  = p
   
-  file_name = paste(i, ".tiff", sep="")
-  tiff(file_name, height = 2500, width = 2500, res = 300)
+  file_name = paste(i, "_temp.png", sep="")
+  png(file_name, height = 1000, width = 1000, res = 200)
   print(plot_list[[i]])
  dev.off()
   
@@ -491,7 +493,7 @@ for (i in unique(nmln$lakename)){
 #they are too shallow to work with the other ones
 nmln.shallow<- nmln %>% filter(Station_ID == "SKYLES" | Station_ID == "SPENCER"| 
                                Station_ID == "ROGERS" | Station_ID =="SMITH" |
-                               Station_ID ==  "LOSTCOO")
+                               Station_ID ==  "LOSTCOO" | Station_ID == "ABBOT")
 
 unique(nmln.shallow$lakename)
 
@@ -581,14 +583,108 @@ for (i in unique(nmln.shallow$lakename)){
   
   plot_list[[i]]  = p
   
-  file_name = paste(i, ".tiff", sep="")
-  tiff(file_name, height = 2500, width = 2500, res = 300)
+  file_name = paste(i, "_temp.png", sep="")
+  png(file_name, height = 1000, width = 1000, res = 200)
   print(plot_list[[i]])
   dev.off()
   
   
 }
 
+
+#cutting dates for Temp for Blanchard ####
+#use nmln blanch created when I do the same thing for DO above
+setwd("C:/Users/User/Dropbox/WLI (2)/PROJECTS/NMLN/REPORTING/GRAPHS/NMLNSummaryGraphs2023/TEMP")
+plot_list = list()
+for (i in unique(nmlnblanch$lakename)){
+  
+  onelake<- nmlnblanch %>% filter(lakename == i)
+  
+  p0<-  ggplot(data = onelake %>% filter(Characteristic_ID == "TEMP-W", month == 7 | month == 8, year < 2023))+
+    annotation_custom(g, xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) + 
+    annotate("rect", xmin =86, xmax = 90, ymin = -Inf, ymax =0.01, alpha = .4, color = "red", fill = "red")+
+    geom_text(position = "identity",  x = 88, y = -6, label = "CRITICAL \nTHERMAL \nMAXIMUM", aes(angle = 90,), color = "white", size = 3, fontface = "bold")+
+    annotate("rect", xmin =77, xmax = 86, ymin = -Inf, ymax =0.01, alpha = .4, color = "sienna1", fill = "sienna1")+
+    geom_text(position = "identity", x = 82, y = -6, label = "INCIPIENT \nLETHAL \nTEMPERATURE", aes(angle = 90,), color = "white", size = 3, fontface = "bold")+
+    geom_point(aes(x = Result_Value, y = -1*Result_Depth_Height_Measure, fill = Analysis_Start_Date, size = Analysis_Start_Date, shape = Analysis_Start_Date))+
+    theme_bw()+
+    geom_point(data = onelake %>% filter(Characteristic_ID == "TEMP-W", month <10 & month > 1, year == 2023), aes(x= Result_Value, y = -1*Result_Depth_Height_Measure), fill = "lawngreen", size = 3, shape = 23)+
+    scale_fill_manual(values = c("gray1", "saddlebrown", "plum", "palevioletred1", "darkviolet",  "slateblue", "lightsteelblue", "mediumturquoise", "cyan4",  "deepskyblue", "mediumblue","palegreen4", "darkgreen",
+                                 "darkseagreen1", "springgreen", "yellow",  "goldenrod", "sienna1", "indianred", "thistle", "firebrick", "red4",  "deeppink", "orchid1", "purple4", "peachpuff4",  "snow4", "palegoldenrod"), name = "Date")+
+    scale_shape_manual(values = c(21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,21,21,21,21,21,21,21,21,21,21,21,21,21), name = "Date")+
+    scale_size_manual(values = c(2, 2, 2, 2, 2, 2, 2, 2, 2, 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2), name = "Date")+
+    ggtitle(onelake$lakename, " \nSummer Temperature")+
+    ylab("Depth (m)")+
+    xlab("Temperature F")+
+    scale_y_continuous(expand = c(.01,.01))+
+    scale_x_continuous(expand = c(.01,.01))+
+    theme(axis.text = element_text(size = 12),
+          axis.title = element_text(size = 14, face = "bold"),
+          title = element_text(size = 14, face = "bold"))  
+  
+  
+  p.5<-
+    ggplot(data = onelake %>% filter(Characteristic_ID == "TEMP-W", month == 7 | month == 8, year < 2023))+
+    annotation_custom(g, xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) + 
+    annotate("rect", xmin =86, xmax = 90, ymin = -Inf, ymax =0.01, alpha = .4, color = "red", fill = "red")+
+    geom_text(position = "identity", x = 88, y = -6, label = "CRITICAL THERMAL \nMAXIMUM", aes(angle = 90,), color = "white", size = 3, fontface = "bold")+
+    annotate("rect", xmin =77, xmax = 86, ymin = -Inf, ymax =0.01, alpha = .4, color = "sienna1", fill = "sienna1")+
+    geom_text(position = "identity", x = 82, y = -6, label = "INCIPIENT LETHAL \nTEMPERATURE", aes(angle = 90,), color = "white", size = 3, fontface = "bold")+
+    geom_point(aes(x = Result_Value, y = -1*Result_Depth_Height_Measure, fill = Analysis_Start_Date, size = Analysis_Start_Date, shape = Analysis_Start_Date))+
+    theme_bw()+
+    geom_point(data = onelake %>% filter(Characteristic_ID == "TEMP-W", month <10 & month > 1, year == 2023), aes(x= Result_Value, y = -1*Result_Depth_Height_Measure), fill = "lawngreen", size = 3, shape = 23)+
+    scale_fill_manual(values = c("gray1", "saddlebrown", "plum", "palevioletred1", "darkviolet",  "slateblue", "lightsteelblue", "mediumturquoise", "cyan4",  "deepskyblue", "mediumblue","palegreen4", "darkgreen",
+                                 "darkseagreen1", "springgreen", "yellow",  "goldenrod", "sienna1", "indianred", "thistle", "firebrick", "red4",  "deeppink", "orchid1", "purple4", "peachpuff4",  "snow4", "palegoldenrod"), name = "Date")+
+    scale_shape_manual(values = c(21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,21,21,21,21,21,21,21,21, 21, 21), name = "Date")+
+    scale_size_manual(values = c(2, 2, 2, 2, 2, 2, 2, 2, 2, 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2), name = "Date")+
+    ggtitle(onelake$lakename, " \nSummer Temperature")+
+    ylab("Depth (m)")+
+    xlab("Temperature F")+
+    scale_y_continuous(expand = c(0.01,0.01))+
+    scale_x_continuous(expand = c(.01,.01))+
+    theme(axis.text = element_text(size = 12),
+          axis.title = element_text(size = 14, face = "bold"),
+          title = element_text(size = 14, face = "bold"))+
+    theme(legend.position = "none") 
+  
+  
+  p1<-ggplot()+
+    geom_point(data = onelake %>% filter(Characteristic_ID == "TEMP-W", 
+                                         month <10 & month > 1, year == 2023), 
+               aes(x= Result_Value, y = -1*Result_Depth_Height_Measure, fill = Analysis_Start_Date), 
+               size = 3, shape = 23)+
+    scale_fill_manual(name = "This Year", values = c("lawngreen"))+
+    theme_bw()+
+    mlc_theme
+  
+  leg1<- get_legend(p0)
+  leg2<- get_legend(p1)
+  
+  legboth<-plot_grid(leg1, leg2, ncol = 1)
+  
+  print(plot_grid(p.5,
+                  legboth,
+                  nrow = 1,
+                  align = "h",
+                  axis = "t",
+                  rel_widths = c(1, 0.3)))
+  
+  p = plot_grid(p.5,
+                legboth,
+                nrow = 1,
+                align = "h",
+                axis = "t",
+                rel_widths = c(1, 0.3))
+  
+  plot_list[[i]]  = p
+  
+  file_name = paste(i, "_temp.png", sep="")
+  png(file_name, height = 1050, width = 1000, res = 200)
+  print(plot_list[[i]])
+  dev.off()
+  
+  
+}
 
 
 # Another option: create pdf where each page is a separate plot. could be useful? if it works####
@@ -631,7 +727,7 @@ nmln.tsi$Activity_Start_Date<-as.POSIXct.Date(nmln.tsi$Activity_Start_Date)
 glimpse(nmln.tsi)
 glimpse(nmln)
 #loop for TSI
-setwd("C:/Users/User/Dropbox/WLI (2)/CASSIE/NMLN analysis/NMLNSummaryGraphs2023/TSI")
+setwd("C:/Users/User/Dropbox/WLI (2)/PROJECTS/NMLN/REPORTING/GRAPHS/NMLNSummaryGraphs2023/TSI")
 plot_list = list()
 for (i in unique(nmln.tsi$Station_ID)){
   
@@ -688,8 +784,8 @@ for (i in unique(nmln.tsi$Station_ID)){
   
   plot_list[[i]]  = p
   
-  file_name = paste(i, ".tiff", sep="")
-  tiff(file_name, height = 2500, width = 2500, res = 300)
+  file_name = paste(i, ".png", sep="")
+  png(file_name, height = 1000, width = 1000, res = 200)
   print(plot_list[[i]])
   dev.off()
   
@@ -735,8 +831,8 @@ for (i in unique(nmln.mac$Station_ID)){
   
   plot_list[[i]]  = p
   
-  file_name = paste(i, ".tiff", sep="")
-  tiff(file_name, height = 2500, width = 2500, res = 300)
+  file_name = paste(i, ".png", sep="")
+  png(file_name, height = 1000, width = 1000, res = 200)
   print(plot_list[[i]])
   dev.off()
   
@@ -914,8 +1010,9 @@ for (i in unique(tn.sig.nmln$Station_ID)){
   plot_list[[i]]  = plot
   
   #code for saving when needed
-  file_name = paste(i, ".png", sep="")
-  tiff(file_name, height = 2500, width = 2500, res = 300)
+  #this is the good code for saving #####
+  file_name = paste(i, "_TN.png", sep="")
+  png(file_name, height = 1000, width = 1000, res = 200)
   print(plot_list[[i]])
   dev.off()
   
@@ -951,8 +1048,8 @@ for (i in unique(tp.sig.nmln$Station_ID)){
   plot_list[[i]]  = plot
   
   #code for saving when needed
-  file_name = paste(i, ".tiff", sep="")
-  tiff(file_name, height = 2500, width = 2500, res = 300)
+  file_name = paste(i, "_TP.png", sep="")
+  png(file_name, height = 1000, width = 1000, res = 200)
   print(plot_list[[i]])
   dev.off()
   
@@ -987,8 +1084,8 @@ for (i in unique(chl.sig.nmln$Station_ID)){
   plot_list[[i]]  = plot
   
   #code for saving when needed
-  file_name = paste(i, ".tiff", sep="")
-  tiff(file_name, height = 2500, width = 2500, res = 300)
+  file_name = paste(i, "_CHL.png", sep="")
+  png(file_name, height = 1000, width = 1000, res = 200)
   print(plot_list[[i]])
   dev.off()
   
@@ -1023,8 +1120,8 @@ for (i in unique(nmln3.tn.nonsig$Station_ID)){
   plot_list[[i]]  = plot
   
   #code for saving when needed
-  file_name = paste(i, ".tiff", sep="")
-  tiff(file_name, height = 2500, width = 2500, res = 300)
+  file_name = paste(i, "_TN.png", sep="")
+  png(file_name, height = 1000, width = 1000, res = 200)
   print(plot_list[[i]])
   dev.off()
   
@@ -1056,8 +1153,8 @@ for (i in unique(nmln3.tp.nonsig$Station_ID)){
   plot_list[[i]]  = plot
   
   #code for saving when needed
-  file_name = paste(i, ".png", sep="")
-  tiff(file_name, height = 2500, width = 2500, res = 300)
+  file_name = paste(i, "_TP.png", sep="")
+  png(file_name, height = 1000, width = 1000, res = 200)
   print(plot_list[[i]])
   dev.off()
   
@@ -1089,8 +1186,8 @@ for (i in unique(nmln3.chl.nonsig$Station_ID)){
   plot_list[[i]]  = plot
   
   #code for saving when needed
-  file_name = paste(i, ".tiff", sep="")
-  tiff(file_name, height = 2500, width = 2500, res = 300)
+  file_name = paste(i, "_CHL.png", sep="")
+  png(file_name, height = 1000, width = 1000, res = 200)
   print(plot_list[[i]])
   dev.off()
   
@@ -1267,9 +1364,11 @@ for (i in unique(tp.sig.nmln.mk$Station_ID)){
 }
 
 
+#export nmln3 with trend data and nmln.tsi with tsi data
+setwd("C:/Users/User/Dropbox/WLI (2)/CASSIE/NMLN analysis/SummaryScriptsandData")
 
-
-
+write.csv(nmln.tsi, "NMLNTSIdata2023.csv")
+write.csv(nmln3, "NMLNNutrientTrendData2023.csv")
 
 
 
