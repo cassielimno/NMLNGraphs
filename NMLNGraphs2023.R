@@ -73,7 +73,7 @@ nmln<- nmln %>% mutate(lakename = case_when(grepl("ABBOT", Station_ID) ~ "Abbot"
                                                       grepl("LAKEOW", Station_ID) ~ "Lake ow",
                                                       grepl("LAKEFI", Station_ID) ~ "Five" ,
                                                       grepl("LINDBERGH", Station_ID) ~ "Lindbergh" ,
-                                                      grepl("LITT-BITT", Station_ID) ~  "Little Bitteroot",
+                                                      grepl("LITT-BITT", Station_ID) ~  "Little Bitterroot",
                                                       grepl("LOON", Station_ID) ~ "Loon Lake",
                                                       grepl("LOSTCOO", Station_ID) ~ "Lost Loon",
                                                       grepl("LOWER-STILL", Station_ID) ~ "Lower Stillwater" ,
