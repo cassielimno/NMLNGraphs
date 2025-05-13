@@ -53,18 +53,18 @@ nmln<- nmln %>% mutate(lakename = case_when(grepl("ABBOT", Station_ID) ~ "Abbot"
                                             grepl( "DOLLAR", Station_ID) ~  "Dollar",
                                             grepl("ECHO", Station_ID) ~ "Echo",
                                             grepl("FISH", Station_ID) ~ "Fish",
-                                            grepl( "FH-SKIDOO", Station_ID) ~ "Flathead lake Skidoo Bay",
-                                            grepl("FH-INDIAN", Station_ID) ~ "Flathead lake Indian Bay" ,
-                                            grepl( "FH-WOODS", Station_ID) ~ "Flathead lake Woods Bay",
-                                            grepl("FH-CONRAD", Station_ID) ~ "Flathead lake Conrad Point",
-                                            grepl("FH-CRESC", Station_ID) ~ "Flathead lake Cresc",
-                                            grepl("FH-MACK", Station_ID) ~ "Flathead lake Mackinaw Alley",
-                                            grepl("FH-SOMERS", Station_ID) ~ "Flathead lake Somers Bay",
-                                            grepl("FH-YELLOW", Station_ID) ~ "Flathead lake Yellow Bay",
-                                            grepl("FH-MARCO", Station_ID) ~ "Flathead lake Marco",
-                                            grepl("FH-MISS", Station_ID) ~ "Flathead lake Miss",
-                                            grepl("FH-DAYT", Station_ID) ~ "Flathead lake Dayt",
-                                            grepl("FH-WAYF", Station_ID) ~ "Flathead lake Wayf",
+                                            grepl( "FH-SKIDOO", Station_ID) ~ "Flathead Lake Skidoo Bay",
+                                            grepl("FH-INDIAN", Station_ID) ~ "Flathead Lake Indian Bay" ,
+                                            grepl( "FH-WOODS", Station_ID) ~ "Flathead Lake Woods Bay",
+                                            grepl("FH-CONRAD", Station_ID) ~ "Flathead Lake Conrad Point",
+                                            grepl("FH-CRESC", Station_ID) ~ "Flathead Lake Cresc",
+                                            grepl("FH-MACK", Station_ID) ~ "Flathead Lake Mackinaw Alley",
+                                            grepl("FH-SOMERS", Station_ID) ~ "Flathead Lake Somers Bay",
+                                            grepl("FH-YELLOW", Station_ID) ~ "Flathead Lake Yellow Bay",
+                                            grepl("FH-MARCO", Station_ID) ~ "Flathead Lake Marco",
+                                            grepl("FH-MISS", Station_ID) ~ "Flathead Lake Miss",
+                                            grepl("FH-DAYT", Station_ID) ~ "Flathead Lake Dayt",
+                                            grepl("FH-WAYF", Station_ID) ~ "Flathead Lake Wayf",
                                             grepl("FOY", Station_ID) ~ "Foy",
                                             grepl("GLEN", Station_ID) ~ "Glen",
                                             grepl("HALFM", Station_ID) ~ "Halfmoon" ,
@@ -581,7 +581,7 @@ for (i in unique(nmln$lakename)){
 }
 
 
-#make graphs for smith lake and lost loon manually ####
+ #make graphs for smith lake and lost loon manually ####
 #they are too shallow to work with the other ones
 nmln.shallow<- nmln %>% filter(Station_ID == "SKYLES" | Station_ID == "SPENCER"| 
                                  Station_ID == "ROGERS" | Station_ID =="SMITH" |
