@@ -385,7 +385,7 @@ for (i in unique(nmlnblanch$lakename)){
   #ggsave(p, file=paste0("plot_", i,".png"), width = 14, height = 10, units = "cm")
   
   file_name = paste(i, "_DO.png", sep="")
-  png(file_name, height = 1050, width = 1010, res = 200)
+  png(file_name, height = 1150, width = 1010, res = 200)
   print(plot_list[[i]])
   dev.off()
   
