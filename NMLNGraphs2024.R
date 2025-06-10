@@ -1112,7 +1112,7 @@ nmln2<- nmln %>%
 
 
 #take out all the sites with no TN data or too little TN data (there is deff an easier way but this is how i did it)
-nmln2<- filter(nmln2, !Station_ID == "BULL", !Station_ID == "FH-CONRAD", !Station_ID == "FH-CRESC", 
+nmln2<- filter(nmln2, !Station_ID == "BULL", !Station_ID == "FH-CRESC", 
                !Station_ID == "FH-DAYT", !Station_ID == "FH-MARCO", !Station_ID == "FH-MISS", 
                !Station_ID == "FH-WAYF", !Station_ID == "LAKEOW", !Station_ID == "SWAN-L")
 
