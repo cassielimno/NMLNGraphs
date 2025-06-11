@@ -23,6 +23,7 @@ mlc_theme <- theme(
   title = element_text(size = 12, face = "bold"))
 #THIS IS THE COMPLETED DATA for 2024
 data<- read.csv("HydroShareFinalALL2024.csv")
+#NEXT YEAR MAKE SURE THIS ALSO INCLUDES TALLY LAKE IT IS GETTING FILTERED OUT ####
 nmln<- data %>% filter(Project_ID == "NMLN")
 
 
