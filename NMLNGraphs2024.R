@@ -8,6 +8,7 @@ library(grid)
 library(tayloRswift)
 library(cowplot)
 library(patchwork)
+library(ggpubr)
 #load theme
 mlc_theme <- theme(
   axis.title.x=element_text(size=14, face="bold", colour = "black"),
@@ -24,15 +25,15 @@ mlc_theme <- theme(
 #THIS IS THE COMPLETED DATA for 2024
 data<- read.csv("HydroShareFinalALL2024.csv")
 #NEXT YEAR MAKE SURE THIS ALSO INCLUDES TALLY LAKE IT IS GETTING FILTERED OUT ####
-nmln<- data %>% filter(Project_ID == "NMLN")
+nmln<- data %>% filter(Project_ID == "NMLN" | Station_ID == "TALLY")
 
 
 
 #modify date and make month col
 glimpse(nmln)
 #nmln$Activity_Start_Date<-as.POSIXct(nmln$Activity_Start_Date, format = "%M/%D/%Y")
-#nmln$Activity_Start_Date<-mdy(nmln$Activity_Start_Date)
-nmln$Activity_Start_Date<-as.POSIXct(nmln$Activity_Start_Date)
+nmln$Activity_Start_Date<-mdy(nmln$Activity_Start_Date)
+#nmln$Activity_Start_Date<-as.POSIXct(nmln$Activity_Start_Date)
 nmln<-nmln %>% mutate(year = year(Activity_Start_Date), 
                       month = month(Activity_Start_Date), day = yday(Activity_Start_Date))
 nmln<- nmln %>% mutate(monthname = month.abb[month])
@@ -1216,6 +1217,8 @@ tp.sig.nmln<-nmln3 %>% filter(p< 0.05, Characteristic_ID == "TP")
 #see how many
 unique(tp.sig.nmln$Station_ID)
 
+
+
 #make TP graphs ####
 #in a loop for sig graphs
 setwd("C:/Users/User/Dropbox/WLI (2)/PROJECTS/NMLN/REPORTING/GRAPHS/NMLNSummaryGraphs2024/TP")
@@ -1561,7 +1564,39 @@ write.csv(nmln.tsi, "NMLNTSIdata2024.csv")
 write.csv(nmln3, "NMLNNutrientTrendData2024.csv")
 
 
+#do tally lake graphs ALONE ####
+ggplot(data = nmln3 %>% filter(Station_ID == "TALLY", year > 2013, Characteristic_ID == "TN"),
+       aes(y = result_nd, x = year))+
+  geom_point()+
+geom_smooth(method = "lm")+
+  stat_cor(label.y = 300)+ 
+  stat_regline_equation(label.y = 45)+
+  xlab("Year")+
+  mlc_theme+
+  ggtitle("tally tn")
 
-
-
+  
+  ggplot(data = nmln3 %>% filter(Station_ID == "TALLY", year > 2013, Characteristic_ID == "TP"),
+         aes(y = result_nd, x = year))+
+    geom_point()+
+    geom_smooth(method = "lm")+
+    stat_cor(label.y = 10)+ 
+    stat_regline_equation(label.y = 5)+
+  ylab( "Total Phosphorus (ug/l)")+
+    xlab("Year")+
+    mlc_theme+
+    ggtitle("tally tp")
+  
+  
+  ggplot(data = nmln3 %>% filter(Station_ID == "TALLY", year > 2012, Characteristic_ID == "CHL-A-CP"),
+         aes(y = result_nd, x = year))+
+    geom_point()+
+    geom_smooth(method = "lm")+
+    stat_cor(label.y = 2)+ 
+    stat_regline_equation(label.y = 3)+
+    xlab("Year")+
+    mlc_theme+
+    ggtitle("tally chl")
+  
+  
 
